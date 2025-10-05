@@ -38,12 +38,6 @@ export const LoginForm = () => {
             password: data.password,
             callbackURL: "/secretpage"
         });
-
-        if (!error) {
-            console.log("Successfully logged in");
-        }
-
-        console.log("Error:", error);
     }
 
     return (
