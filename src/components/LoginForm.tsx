@@ -1,6 +1,7 @@
 "use client";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -25,6 +26,8 @@ const formSchema = z.object({
 
 export const LoginForm = () => {
 
+    const router = useRouter();
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -34,17 +37,30 @@ export const LoginForm = () => {
     });
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
-        const { error } =  await authClient.signIn.email({
+        await authClient.signIn.email({
             email: data.email,
             password: data.password,
-            callbackURL: "/secretpage"
-        });
+        },
+            {
+                async onSuccess(context) {
+                    toast.success("Login successful.");
 
-        if (error && error.message) {
-            toast.error(error.message);
-        } else {
-            toast.success("Login successful!");
-        }
+                    const session = await authClient.getSession();
+
+                    console.log(session);
+
+                    if (!session.data?.user.twoFactorEnabled) {
+                        router.push("/two-factor/enable");
+                        return;
+                    }
+
+                    router.push("/secretpage");
+                },
+                async onError(context) {
+                    toast.error(context.error.message);
+                }
+            }
+        )
     }
 
     return (
