@@ -15,6 +15,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
+import toast from "react-hot-toast";
 
 const formSchema = z.object({
     email: z.email().min(2).max(50),
@@ -38,6 +39,12 @@ export const LoginForm = () => {
             password: data.password,
             callbackURL: "/secretpage"
         });
+
+        if (error && error.message) {
+            toast.error(error.message);
+        } else {
+            toast.success("Login successful!");
+        }
     }
 
     return (

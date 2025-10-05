@@ -18,6 +18,6 @@ export const LogoutButton = () => {
     }
 
     return (
-        <Button onClick={onClick}>Log out</Button>
+        <Button onClick={onClick} className="hover:cursor-pointer">Log out</Button>
     )
 }

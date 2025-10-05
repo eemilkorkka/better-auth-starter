@@ -1,6 +1,7 @@
 "use client";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -40,6 +41,12 @@ export const SignupForm = () => {
             name: data.name,
             callbackURL: "/secretpage"
         });
+
+        if (error && error.message) {
+            toast.error(error.message);
+        } else {
+            toast.success("Signup successful!");
+        }
     }
 
     return (
